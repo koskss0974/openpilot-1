@@ -34,9 +34,9 @@ class CarInterface(CarInterfaceBase):
     # Most Hyundai car ports are community features for now
     ret.communityFeature = candidate not in [CAR.SONATA]
 
-    ret.steerActuatorDelay = 0.1  # Default delay
+    ret.steerActuatorDelay = 0.375  # Default delay
     ret.steerRateCost = 0.5
-    ret.steerLimitTimer = 0.8
+    ret.steerLimitTimer = 1.5
     tire_stiffness_factor = 1.
 
     # genesis
@@ -206,13 +206,24 @@ class CarInterface(CarInterfaceBase):
         ret.lateralTuning.indi.actuatorEffectiveness = 1.76
         ret.steerRatio = 24
       else:
-        ret.steerRatio = 13.73
-        ret.lateralTuning.pid.kf = 0.00005
-        ret.lateralTuning.pid.kiBP, ret.lateralTuning.pid.kpBP = [[0.], [0.]]
-        ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.25], [0.05]]
+        ret.lateralTuning.init('lqr')
+      ret.lateralTuning.lqr.scale = 1925.0
+      ret.lateralTuning.lqr.ki = 0.06
+      ret.lateralTuning.lqr.a = [0., 1., -0.22619643, 1.21822268]
+      ret.lateralTuning.lqr.b = [-1.92006585e-04, 3.95603032e-05]
+      ret.lateralTuning.lqr.c = [1., 0.]
+      ret.lateralTuning.lqr.k = [-100., 450.]
+      ret.lateralTuning.lqr.l = [0.22, 0.318]
+      ret.lateralTuning.lqr.dcGain = 0.003
+      #ret.lateralTuning.pid.kf = 0.00005                >>>> PID들어간 항목 코멘트(#)처리
+      ret.mass = 1950. + STD_CARGO_KG
+      ret.wheelbase = 2.78
+      ret.steerRatio = 14.4 * 1.15
+      #ret.lateralTuning.pid.kiBP, ret.lateralTuning.pid.kpBP = [[0.], [0.]]      >>>> PID들어간 항목 코멘트(#)처리
+      #ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.25], [0.05]]    >>>> PID들어간 항목 코멘트(#)처리
       ret.mass = 1737. + STD_CARGO_KG
       ret.wheelbase = 2.7
-      tire_stiffness_factor = 0.385
+      tire_stiffness_factor = 1.
     elif candidate in [CAR.CARDENZA, CAR.CARDENZA_HEV]:
       ret.lateralTuning.pid.kf = 0.00005
       ret.mass = 1575. + STD_CARGO_KG
@@ -335,8 +346,8 @@ class CarInterface(CarInterfaceBase):
 
     if self.CC.longcontrol and self.CS.cruise_unavail:
       events.add(EventName.brakeUnavailable)
-    if abs(ret.steeringAngle) > 90. and EventName.steerTempUnavailable not in events.events:
-      events.add(EventName.steerTempUnavailable)
+    #if abs(ret.steeringAngle) > 90. and EventName.steerTempUnavailable not in events.events:
+    #  events.add(EventName.steerTempUnavailable)
     if self.low_speed_alert and not self.CS.mdps_bus:
       events.add(EventName.belowSteerSpeed)
     if self.CC.turning_indicator_alert:
