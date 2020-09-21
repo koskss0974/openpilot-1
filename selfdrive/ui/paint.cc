@@ -704,16 +704,16 @@ static void ui_draw_debug(UIState *s)
      
   //ui_print( s, x_pos, y_pos+0, "cO:%.3f  %d, %d",scene.carParams.lateralsRatom.cameraOffset, scene.cruiseState.cruiseSwState, s->livempc_or_radarstate_changed );
   ui_print( s, x_pos, y_pos+0,   "sR:%.2f, %.2f", scene.liveParams.steerRatio, scene.pathPlan.steerRatio );
-  ui_print( s, x_pos, y_pos+50,  "aO:%.2f, %.2f", scene.liveParams.angleOffset, scene.pathPlan.angleOffset );
-  ui_print( s, x_pos, y_pos+100, "aA:%.2f", scene.liveParams.angleOffsetAverage );
-  ui_print( s, x_pos, y_pos+150, "sF:%.2f", scene.liveParams.stiffnessFactor );
+  ui_print( s, x_pos, y_pos+50,  "aO, aA:%.2f, %.2f", scene.liveParams.angleOffset, scene.pathPlan.angleOffset );
+  #ui_print( s, x_pos, y_pos+100, "aA:%.2f", scene.liveParams.angleOffsetAverage );
+  #ui_print( s, x_pos, y_pos+150, "sF:%.2f", scene.liveParams.stiffnessFactor );
 
-  ui_print( s, x_pos, y_pos+200, "aD:%.2f", scene.pathPlan.steerActuatorDelay );
-  ui_print( s, x_pos, y_pos+250, "lW:%.2f", scene.pathPlan.laneWidth );
-  ui_print( s, x_pos, y_pos+300, "prob:%.2f, %.2f", scene.pathPlan.lProb, scene.pathPlan.rProb );
-  ui_print( s, x_pos, y_pos+350, "Poly:%.2f, %.2f", scene.pathPlan.lPoly, scene.pathPlan.rPoly );
-  ui_print( s, x_pos, y_pos+400, "model_sum:%.1f" , scene.model_sum);
-  ui_print( s, x_pos, y_pos+450, "awareness:%.2f" , scene.awareness_status);
+  ui_print( s, x_pos, y_pos+100, "aD:%.2f", scene.pathPlan.steerActuatorDelay );
+  ui_print( s, x_pos, y_pos+150, "Width:%.2f", scene.pathPlan.laneWidth );
+  ui_print( s, x_pos, y_pos+200, "prob:%.2f, %.2f", scene.pathPlan.lProb, scene.pathPlan.rProb );
+  ui_print( s, x_pos, y_pos+250, "Poly:%.2f, %.2f", scene.pathPlan.lPoly, scene.pathPlan.rPoly );
+  ui_print( s, x_pos, y_pos+300, "model_sum:%.1f" , scene.model_sum);
+  #ui_print( s, x_pos, y_pos+450, "awareness:%.2f" , scene.awareness_status);
 
 
 
