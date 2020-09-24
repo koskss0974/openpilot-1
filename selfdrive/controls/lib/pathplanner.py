@@ -240,7 +240,9 @@ class PathPlanner():
         self.steer_rate_cost = sm['carParams'].steerRateCost   
         self.steerRatio = sm['carParams'].steerRatio        
       else:
-        self.steer_rate_cost = CP.steerRateCost
+        #self.steer_rate_cost = CP.steerRateCost (가변 cost적용때문에 주석처리)
+        self.sR_Cost = [[0.235,1.15,1.5,1.15,0.235],[0.1,0.5,0.1]] #가변 srcost?
+        self.steer_rate_cost = interp(abs(angle_steers), sR_BPV, self.sR_Cost) #가변 srcost?
         self.steerRatio = CP.steerRatio
    
       
@@ -272,10 +274,7 @@ class PathPlanner():
       self.lane_change_state = LaneChangeState.off
       self.lane_change_direction = LaneChangeDirection.none
     else:
-      l_poly = self.LP.l_poly[3]
-      r_poly = self.LP.r_poly[3]
-      c_prob = l_poly + r_poly
-      
+      c_prob = self.LP.l_prob + self.LP.r_prob
       torque_applied = steeringPressed and \
                         ((steeringTorque > 0 and self.lane_change_direction == LaneChangeDirection.left) or \
                           (steeringTorque < 0 and self.lane_change_direction == LaneChangeDirection.right))
@@ -304,8 +303,8 @@ class PathPlanner():
       # starting
       elif self.lane_change_state == LaneChangeState.laneChangeStarting:
         # fade out over .5s
-        xp = [40,60,70,80]
-        fp2 = [0.5,1,1.5,2]
+        xp = [40,50,60,70]
+        fp2 = [0.5,0.8,1.2,1.8]
         lane_time = interp( v_ego_kph, xp, fp2 )        
         self.lane_change_ll_prob = max(self.lane_change_ll_prob - lane_time*DT_MDL, 0.0)
         # 98% certainty
@@ -316,18 +315,14 @@ class PathPlanner():
       elif self.lane_change_state == LaneChangeState.laneChangeFinishing:
         # fade in laneline over 1s
         self.lane_change_ll_prob = min(self.lane_change_ll_prob + DT_MDL, 1.0)
-        if self.lane_change_ll_prob > 0.99 and abs(c_prob) < 0.3:
+        if self.lane_change_ll_prob > 0.99  and  abs(c_prob) < 0.3:
           self.lane_change_state = LaneChangeState.laneChangeDone
 
       # done
       elif self.lane_change_state == LaneChangeState.laneChangeDone:
         if not one_blinker:
-          #self.trPATH.add( 'end - pathPlan l_prob={} r_prob={} c_prob={}'.format( l_poly, r_poly, c_prob ) )
           self.lane_change_state = LaneChangeState.off
-          
-     #if self.lane_change_state != LaneChangeState.off:
-       #self.trPATH.add( 'pathPlan l_prob={} r_prob={} c_prob={}'.format( l_poly, r_poly, c_prob ) )
- 
+
 
 
     if self.lane_change_state in [LaneChangeState.off, LaneChangeState.preLaneChange]:
@@ -379,24 +374,16 @@ class PathPlanner():
         if delta_steer < 0:
           self.angle_steers_des_mpc = self.limit_ctrl( org_angle_steers_des, limit_steers, angle_steers )
 
-    elif v_ego_kph < 10:  # 30
-      xp = [5,10]
-      fp2 = [1,5]
+    elif v_ego_kph < 30:  # 30
+      xp = [10,20,30]
+      fp2 = [5,7,9]
       limit_steers = interp( v_ego_kph, xp, fp2 )
       self.angle_steers_des_mpc = self.limit_ctrl( org_angle_steers_des, limit_steers, angle_steers )
-
-    elif v_ego_kph > 60 or v_ego_kph < 10: 
+    elif v_ego_kph > 60: 
       pass
     elif abs(angle_steers) > 10: # angle steer > 10
-      """
-      #1. 방법
-      xp = [-50,-30,-15,-10,-5,0,5,10,15,30,50]
-      fp1 = [-90,-52,-35,-28,-12,0,12,28,35,52,90]
-      self.angle_steers_des_mpc = interp( model_sum, xp, fp1 )  # +
-      """
-
-      # 2.방법
-      xp = [-10,-5,0,5,10]    # 5 조향각 약12도, 10=>28 15=>35, 30=>52
+      # 2.
+      xp = [-10,-5,0,5,10]    # 5=>12  10=>28 15=>35, 30=>52
       fp1 = [3,8,10,20,10]    # +
       fp2 = [10,20,10,8,3]    # -
       limit_steers1 = interp( model_sum, xp, fp1 )  # +
