@@ -240,9 +240,9 @@ class PathPlanner():
         self.steer_rate_cost = sm['carParams'].steerRateCost   
         self.steerRatio = sm['carParams'].steerRatio        
       else:
-        #self.steer_rate_cost = CP.steerRateCost (가변 cost적용때문에 주석처리)
-        self.sR_Cost = [[0.235,1.15,1.5,1.15,0.235],[0.1,0.5,0.1]] #가변 srcost?
-        self.steer_rate_cost = interp(abs(angle_steers), sR_BPV, self.sR_Cost) #가변 srcost?
+        self.steer_rate_cost = CP.steerRateCost (가변 cost적용때문에 주석처리)
+        #self.sR_Cost = [[0.235,1.15,1.5,1.15,0.235],[0.1,0.5,0.1]] #가변 srcost?
+        #self.steer_rate_cost = interp(abs(angle_steers), sR_BPV, self.sR_Cost) #가변 srcost?
         self.steerRatio = CP.steerRatio
    
       
