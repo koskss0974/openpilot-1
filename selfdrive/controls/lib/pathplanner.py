@@ -140,7 +140,7 @@ class PathPlanner():
     for steerRatio in self.sr_BPV:  # steerRatio
       self.sr_SteerRatio.append( interp( sr_value, steerRatio, self.sr_steerRatioV[nPos] ) )
       nPos += 1
-      if nPos > 10:
+      if nPos > 20:
         break
 
     
