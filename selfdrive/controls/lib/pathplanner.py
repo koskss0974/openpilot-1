@@ -383,12 +383,22 @@ class PathPlanner():
       pass
     elif abs(angle_steers) > 10: # angle steer > 10
       # 2.
-      xp = [-10,-5,0,5,10]    # 5=>12  10=>28 15=>35, 30=>52
+      xp = [-10,-5,0,5,10]    # 5  10=>28 15=>35, 30=>52
       fp1 = [3,8,10,20,10]    # +
       fp2 = [10,20,10,8,3]    # -
       limit_steers1 = interp( model_sum, xp, fp1 )  # +
       limit_steers2 = interp( model_sum, xp, fp2 )  # -
       self.angle_steers_des_mpc = self.limit_ctrl1( org_angle_steers_des, limit_steers1, limit_steers2, angle_steers )
+      
+    # 최대 허용 제어 조향각.
+    delta_steer = self.angle_steers_des_mpc - angle_steers
+    ANGLE_LIMIT = 8
+    if delta_steer > ANGLE_LIMIT:
+      p_angle_steers = angle_steers + ANGLE_LIMIT
+      self.angle_steers_des_mpc = p_angle_steers
+    elif delta_steer < -ANGLE_LIMIT:
+      m_angle_steers = angle_steers - ANGLE_LIMIT
+      self.angle_steers_des_mpc = m_angle_steers
       
 
     #  Check for infeasable MPC solution
