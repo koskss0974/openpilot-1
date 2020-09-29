@@ -245,7 +245,7 @@ class PathPlanner():
    
       
       steerRatio = self.atom_tune( v_ego_kph, angle_steers, atomTuning )
-      #self.steerRatio = self.atom_steer( steerRatio, 2, 0.05 )
+      self.steerRatio = self.atom_steer( steerRatio, 2, 1 )
 
     #actuatorDelay = CP.steerActuatorDelay
     steerActuatorDelay = self.atom_actuatorDelay( v_ego_kph, angle_steers, atomTuning )
