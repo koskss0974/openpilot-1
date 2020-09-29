@@ -241,13 +241,11 @@ class PathPlanner():
         self.steerRatio = sm['carParams'].steerRatio        
       else:
         self.steer_rate_cost = CP.steerRateCost
-        #self.sR_Cost = [[0.235,1.15,1.5,1.15,0.235],[0.1,0.5,0.1]] #가변 srcost?
-        #self.steer_rate_cost = interp(abs(angle_steers), sR_BPV, self.sR_Cost) #가변 srcost?
         self.steerRatio = CP.steerRatio
    
       
       steerRatio = self.atom_tune( v_ego_kph, angle_steers, atomTuning )
-      self.steerRatio = self.atom_steer( steerRatio, 2, 0.05 )
+      #self.steerRatio = self.atom_steer( steerRatio, 2, 0.05 )
 
     #actuatorDelay = CP.steerActuatorDelay
     steerActuatorDelay = self.atom_actuatorDelay( v_ego_kph, angle_steers, atomTuning )
