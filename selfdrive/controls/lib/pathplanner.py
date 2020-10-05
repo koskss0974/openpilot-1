@@ -302,7 +302,7 @@ class PathPlanner():
       elif self.lane_change_state == LaneChangeState.laneChangeStarting:
         # fade out over .5s
         xp = [40,80]
-        fp2 = [0.5,2]
+        fp2 = [1,2]
         lane_time = interp( v_ego_kph, xp, fp2 )        
         self.lane_change_ll_prob = max(self.lane_change_ll_prob - lane_time*DT_MDL, 0.0)
         # 98% certainty
@@ -363,7 +363,12 @@ class PathPlanner():
     org_angle_steers_des = self.angle_steers_des_mpc
 
     # atom
-    if steeringPressed:
+    if self.lane_change_state == LaneChangeState.laneChangeStarting:
+      xp = [40,80]
+      fp2 = [3,10]
+      limit_steers = interp( v_ego_kph, xp, fp2 )
+      self.angle_steers_des_mpc = self.limit_ctrl( org_angle_steers_des, limit_steers, angle_steers )      
+    elif steeringPressed:
       delta_steer = self.angle_steers_des_mpc - angle_steers
       xp = [-255,0,255]
       fp2 = [5,0,5]
