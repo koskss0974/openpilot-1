@@ -983,7 +983,8 @@ int main(int argc, char* argv[]) {
   int draws = 0;
 
   UIScene &scene = s->scene;
-  s->scene.satelliteCount = -1;
+  scene.satelliteCount = -1;
+  scene.batteryPercent = 50;
   s->started = false;
   s->vision_seen = false;
   int nAwakeTime = 0;
