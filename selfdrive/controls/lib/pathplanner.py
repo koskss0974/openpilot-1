@@ -301,8 +301,8 @@ class PathPlanner():
       # starting
       elif self.lane_change_state == LaneChangeState.laneChangeStarting:
         # fade out over .5s
-        xp = [40,50,60,70]
-        fp2 = [0.5,0.8,1.2,1.5]
+        xp = [40,80]
+        fp2 = [0.2,2]
         lane_time = interp( v_ego_kph, xp, fp2 )        
         self.lane_change_ll_prob = max(self.lane_change_ll_prob - lane_time*DT_MDL, 0.0)
         # 98% certainty
@@ -312,7 +312,10 @@ class PathPlanner():
       # finishing
       elif self.lane_change_state == LaneChangeState.laneChangeFinishing:
         # fade in laneline over 1s
-        self.lane_change_ll_prob = min(self.lane_change_ll_prob + DT_MDL, 1.0)
+        xp = [40,70]
+        fp2 = [2,1]
+        lane_time = interp( v_ego_kph, xp, fp2 )
+        self.lane_change_ll_prob = min(self.lane_change_ll_prob + lane_time*DT_MDL, 1.0)
         if self.lane_change_ll_prob > 0.99  and  abs(c_prob) < 0.3:
           self.lane_change_state = LaneChangeState.laneChangeDone
 
