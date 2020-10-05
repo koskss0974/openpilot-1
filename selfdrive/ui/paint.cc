@@ -706,10 +706,13 @@ static void ui_draw_debug(UIState *s)
   ui_print( s, x_pos, y_pos+0,   "sR : %.2f, %.2f", scene.liveParams.steerRatio, scene.pathPlan.steerRatio );
   ui_print( s, x_pos, y_pos+50,  "aO, aA : %.2f, %.2f", scene.liveParams.angleOffset, scene.pathPlan.angleOffset );
   ui_print( s, x_pos, y_pos+100, "aD : %.2f", scene.pathPlan.steerActuatorDelay );
-  ui_print( s, x_pos, y_pos+150, "Width : %.2f", scene.pathPlan.laneWidth );
-  ui_print( s, x_pos, y_pos+200, "prob : %.2f, %.2f", scene.pathPlan.lProb, scene.pathPlan.rProb );
-  ui_print( s, x_pos, y_pos+250, "Poly : %.2f, %.2f", scene.pathPlan.lPoly, scene.pathPlan.rPoly );
-  ui_print( s, x_pos, y_pos+300, "model_sum : %.1f" , scene.model_sum);
+  //ui_print( s, x_pos, y_pos+150, "Width : %.2f", scene.pathPlan.laneWidth );
+  ui_print( s, x_pos, y_pos+150, "prob : %.2f, %.2f", scene.pathPlan.lProb, scene.pathPlan.rProb );
+  //ui_print( s, x_pos, y_pos+200, "Poly : %.2f, %.2f", scene.pathPlan.lPoly, scene.pathPlan.rPoly );
+  ui_print( s, x_pos, y_pos+200, "model_sum : %.1f" , scene.model_sum);
+  
+  ui_print( s, x_pos+270, y_pos+800, "좌측간격             차선폭             우측간격");
+  ui_print( s, x_pos+270, y_pos+850, "    %.2f                  %.2f                  %.2f", scene.pathPlan.lProb, scene.pathPlan.laneWidth, scene.pathPlan.rProb );
 
 
 
