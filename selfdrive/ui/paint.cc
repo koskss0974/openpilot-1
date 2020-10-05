@@ -712,7 +712,7 @@ static void ui_draw_debug(UIState *s)
   ui_print( s, x_pos, y_pos+200, "model_sum : %.1f" , scene.model_sum);
   
   ui_print( s, x_pos+270, y_pos+800, "좌측간격             차선폭             우측간격");
-  ui_print( s, x_pos+270, y_pos+850, "    %.2f                  %.2f                  %.2f", scene.pathPlan.lProb, scene.pathPlan.laneWidth, scene.pathPlan.rProb );
+  ui_print( s, x_pos+270, y_pos+850, "    %.2f                  %.2f                  %.2f", scene.pathPlan.lPoly, scene.pathPlan.laneWidth, scene.pathPlan.rPoly );
 
 
 
