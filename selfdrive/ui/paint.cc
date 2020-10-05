@@ -475,6 +475,41 @@ static void ui_draw_vision_lanes(UIState *s) {
     update_all_lane_lines_data(s, scene->model.right_lane, pvd + MODEL_LANE_PATH_CNT);
     s->model_changed = false;
   }
+
+  float  left_lane =  fmax( 0.9, scene->model.left_lane.prob ); // 최소한 90%정도 진하게 
+  float  right_lane =  fmax( 0.9, scene->model.right_lane.prob );
+  
+  int left_red_lvl = int(255 - scene->model.left_lane.prob*255);
+  int left_green_lvl = int(scene->model.left_lane.prob*255 - 255);
+  int right_red_lvl = int(255 - scene->model.right_lane.prob*255);
+  int right_green_lvl = int(scene->model.right_lane.prob*255 - 255);
+  NVGcolor colorLeft = nvgRGBA(left_red_lvl,left_green_lvl, 0, 255);
+  NVGcolor colorRight = nvgRGBA(right_red_lvl,right_green_lvl, 0, 255);
+
+  if( scene->leftBlinker )
+  {
+    if( scene->leftBlindspot )
+      colorLeft  = nvgRGBAf(0.7, 0.1, 0.1, 1.0 ); // 왼쪽 차선변경 시도시 차량 감지되면 레드
+    else
+      colorLeft  = nvgRGBAf(0.1, 0.7, 0.1, 1.0 ); // 왼쪽 차선변경 시도시 차량 없으면 그린
+    if( scene->nTimer & 0x01 )
+    {
+       colorLeft = nvgRGBAf(0.7, 0.7, 0.7, left_lane ); // 점멸시 그레이색
+    }      
+  }
+
+  if( scene->rightBlinker )
+  {
+    if( scene->rightBlindspot )
+        colorRight  = nvgRGBAf(0.7, 0.1, 0.1, 1.0 ); // 오른쪽 차선변경 시도시 차량 감지되면 레드
+    else
+        colorRight  = nvgRGBAf(0.1, 0.7, 0.1, 1.0 ); // 오른쪽 차선변경 시도시 차량 없으면 그린
+    if( scene->nTimer & 0x01 )
+    {
+       colorRight = nvgRGBAf(0.7, 0.7, 0.7, right_lane ); // 점멸시 그레이색
+    }
+  }
+
   // Draw left lane edge
   ui_draw_lane(
       s, &scene->model.left_lane,
