@@ -742,7 +742,7 @@ static void ui_draw_debug(UIState *s)
   {
     case 0: strcpy( str_msg, "0.OP MODE" ); nColor = COLOR_WHITE; break;
     case 1: strcpy( str_msg, "1.CURVE" );    nColor = nvgRGBA(200, 200, 255, 255);  break;
-    case 2: strcpy( str_msg, "2.FWD CAR" );  nColor = nvgRGBA(200, 255, 255, 255);  break;
+    case 2: strcpy( str_msg, "2.DISTANCE" );  nColor = nvgRGBA(200, 255, 255, 255);  break;
     case 3: strcpy( str_msg, "3.HYUNDAI" );  nColor = nvgRGBA(200, 255, 255, 255);  break;
     case 4: strcpy( str_msg, "4.CURVATURE" ); nColor = nvgRGBA(200, 255, 255, 255); break;
     default :  sprintf( str_msg, "%d.NORMAL", scene.cruiseState.modeSel ); nColor = COLOR_WHITE;  break;
