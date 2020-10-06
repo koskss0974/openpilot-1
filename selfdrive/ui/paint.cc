@@ -483,8 +483,8 @@ static void ui_draw_vision_lanes(UIState *s) {
   int left_green_lvl = int(scene->model.left_lane.prob*255 - 255);
   int right_red_lvl = int(255 - scene->model.right_lane.prob*255);
   int right_green_lvl = int(scene->model.right_lane.prob*255 - 255);
-  NVGcolor colorLeft = nvgRGBA(left_red_lvl,left_green_lvl, 0, 100);
-  NVGcolor colorRight = nvgRGBA(right_red_lvl,right_green_lvl, 0, 100);
+  NVGcolor colorLeft = nvgRGBA(left_red_lvl,left_green_lvl, 0, 255);
+  NVGcolor colorRight = nvgRGBA(right_red_lvl,right_green_lvl, 0, 255);
 
   if( scene->leftBlinker )
   {
@@ -746,7 +746,7 @@ static void ui_draw_debug(UIState *s)
   //ui_print( s, x_pos, y_pos+200, "Poly : %.2f, %.2f", scene.pathPlan.lPoly, scene.pathPlan.rPoly );
   ui_print( s, x_pos, y_pos+200, "model_sum : %.1f" , scene.model_sum);
   
-  ui_print( s, x_pos+270, y_pos+800, "좌측간격(%%)       차선폭           우측간격(%%)");
+  ui_print( s, x_pos+270, y_pos+800, "좌측간격(%%)       차선폭         우측간격(%%)");
   ui_print( s, x_pos+270, y_pos+850, "     %4.1f                  %4.1f                  %4.1f", (scene.pathPlan.lPoly/(scene.pathPlan.lPoly+abs(scene.pathPlan.rPoly)))*100, scene.pathPlan.laneWidth, (abs(scene.pathPlan.rPoly)/(scene.pathPlan.lPoly+abs(scene.pathPlan.rPoly)))*100 );
 
 
