@@ -514,13 +514,13 @@ static void ui_draw_vision_lanes(UIState *s) {
   ui_draw_lane(
       s, &scene->model.left_lane,
       pvd,
-      nvgRGBAf(1.0, 1.0, 1.0, scene->model.left_lane.prob));
+      colorLeft );
 
   // Draw right lane edge
   ui_draw_lane(
       s, &scene->model.right_lane,
       pvd + MODEL_LANE_PATH_CNT,
-      nvgRGBAf(1.0, 1.0, 1.0, scene->model.right_lane.prob));
+      colorRight );
 
   if( s->livempc_or_radarstate_changed ) {
     update_all_track_data(s);
@@ -765,7 +765,7 @@ static void ui_draw_debug(UIState *s)
   switch( scene.params.nOpkrAccelProfile  )
   {
     case 1: strcpy( str_msg, "1.slow" ); nColor = nvgRGBA(100, 100, 255, 255); break;
-    case 2: strcpy( str_msg, "2.normal" );    nColor = COLOR_WHITE;  break;
+    case 2: strcpy( str_msg, "2.NORMAL" );    nColor = COLOR_WHITE;  break;
     case 3: strcpy( str_msg, "3.fast" );  nColor = nvgRGBA(255, 100, 100, 255);  break;
     default :  sprintf( str_msg, "%d", scene.params.nOpkrAccelProfile ); nColor = COLOR_WHITE;  break;
   }
