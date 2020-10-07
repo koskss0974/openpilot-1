@@ -47,7 +47,7 @@ static void ui_draw_sidebar_ip_addr(UIState *s) {
   const int network_ip_y = 255;
 
   char network_ip_str[15];
-  snprintf(network_ip_str, sizeof(network_ip_str), "%s", s->scene.ipAddr);
+//  snprintf(network_ip_str, sizeof(network_ip_str), "%s", s->scene.ipAddr);
   nvgFillColor(s->vg, COLOR_WHITE);
   nvgFontSize(s->vg, 30*fFontSize);
   nvgFontFaceId(s->vg, s->font_sans_regular);
