@@ -102,7 +102,7 @@ static void ui_draw_sidebar_network_type(UIState *s) {
       {cereal::ThermalData::NetworkType::CELL4_G, "4G"},
       {cereal::ThermalData::NetworkType::CELL5_G, "5G"}};
   const int network_x = !s->scene.uilayout_sidebarcollapsed ? 50 : -(sbr_w);
-  const int network_y = 273;
+  const int network_y = 303;
   const int network_w = 100;
   const int network_h = 100;
   const char *network_type = network_type_map[s->scene.networkType];
