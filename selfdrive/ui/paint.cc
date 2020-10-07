@@ -476,45 +476,65 @@ static void ui_draw_vision_lanes(UIState *s) {
     s->model_changed = false;
   }
 
-  float  left_lane =  fmax( 0.9, scene->model.left_lane.prob ); // 최소한 90%정도 진하게 
-  float  right_lane =  fmax( 0.9, scene->model.right_lane.prob );
-  
-  int left_red_lvl = int(255 - scene->model.left_lane.prob*255);
-  int left_green_lvl = int(scene->model.left_lane.prob*255 - 255);
-  int right_red_lvl = int(255 - scene->model.right_lane.prob*255);
-  int right_green_lvl = int(scene->model.right_lane.prob*255 - 255);
-  NVGcolor colorLeft = nvgRGBA(left_red_lvl,left_green_lvl, 0, 255);
-  NVGcolor colorRight = nvgRGBA(right_red_lvl,right_green_lvl, 0, 255);
+  int left_red_lvl = 0;
+  int right_red_lvl = 0;
+  int left_green_lvl = 0;
+  int right_green_lvl = 0;
+  int left_blue_lvl = 0;
+  int right_blue_lvl = 0;
 
+  if ( scene->model.left_lane.prob > 0.65 ){
+    left_blue_lvl = int(255 - (1 - scene->model.left_lane.prob) * 2.857 * 255);
+    left_green_lvl = int(255 - (scene->model.left_lane.prob - 0.65) * 2.857 * 255);
+  }
+  else if ( scene->model.left_lane.prob > 0.4 ){
+    left_red_lvl = int(255 - (scene->model.left_lane.prob - 0.4) * 2.5 * 255);
+    left_green_lvl = 255 ;
+  }
+  else {
+    left_red_lvl = 255 ;
+    left_green_lvl = int(255 - (0.4 - scene->model.left_lane.prob) * 2.5 * 255);
+  }
+
+  if ( scene->model.right_lane.prob > 0.65 ){
+    right_blue_lvl = int(255 - (1 - scene->model.right_lane.prob) * 2.857 * 255);
+    right_green_lvl = int(255 - (scene->model.right_lane.prob - 0.65) * 2.857 * 255);
+  }
+  else if ( scene->model.right_lane.prob > 0.4 ){
+    right_red_lvl = int(255 - (scene->model.right_lane.prob - 0.4) * 2.5 * 255);
+    right_green_lvl = 255 ;
+  }
+  else {
+    right_red_lvl = 255 ;
+    right_green_lvl = int(255 - (0.4 - scene->model.right_lane.prob) * 2.5 * 255);
+  }
+
+  NVGcolor colorLeft = nvgRGBA (left_red_lvl, left_green_lvl, left_blue_lvl, 255);
+  NVGcolor colorRight = nvgRGBA (right_red_lvl, right_green_lvl, right_blue_lvl, 255);
+ 
   if( scene->leftBlinker )
   {
     if( scene->leftBlindspot )
-      colorLeft  = nvgRGBAf(0.7, 0.1, 0.1, 1.0 ); // 왼쪽 차선변경 시도시 차량 감지되면 레드
+      colorLeft  = nvgRGBAf( 0.9, 0.1, 0.1, 1.0 ); // 왼쪽 차선변경 시도시 차량 감지되면 레드
     else
-      colorLeft  = nvgRGBAf(0.1, 0.7, 0.1, 1.0 ); // 왼쪽 차선변경 시도시 차량 없으면 그린
+      colorLeft  = nvgRGBAf( 0.1, 0.9, 0.1, 1.0 ); // 왼쪽 차선변경 시도시 차량 없으면 그린
     if( scene->nTimer & 0x01 )
     {
-       colorLeft = nvgRGBAf(0.7, 0.7, 0.7, left_lane ); // 점멸시 그레이색
+       colorLeft = nvgRGBAf( 0.9, 0.9, 0.1, 0.2 ); // 점멸시 옅은 노란색
     }      
   }
 
   if( scene->rightBlinker )
   {
     if( scene->rightBlindspot )
-        colorRight  = nvgRGBAf(0.7, 0.1, 0.1, 1.0 ); // 오른쪽 차선변경 시도시 차량 감지되면 레드
+        colorRight  = nvgRGBAf( 0.9, 0.1, 0.1, 1.0 ); // 오른쪽 차선변경 시도시 차량 감지되면 레드
     else
-        colorRight  = nvgRGBAf(0.1, 0.7, 0.1, 1.0 ); // 오른쪽 차선변경 시도시 차량 없으면 그린
+        colorRight  = nvgRGBAf( 0.1, 0.9, 0.1, 1.0 ); // 오른쪽 차선변경 시도시 차량 없으면 그린
     if( scene->nTimer & 0x01 )
     {
-       colorRight = nvgRGBAf(0.7, 0.7, 0.7, right_lane ); // 점멸시 그레이색
+       colorRight = nvgRGBAf( 0.9, 0.9, 0.1, 0.2 ); // 점멸시 옅은 노란색
     }
   }
-
-  // Draw left lane edge
-  ui_draw_lane(
-      s, &scene->model.left_lane,
-      pvd,
-      colorLeft );
 
   // Draw right lane edge
   ui_draw_lane(
