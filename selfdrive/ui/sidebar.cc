@@ -52,7 +52,7 @@ static void ui_draw_sidebar_ip_addr(UIState *s) {
   nvgFontSize(s->vg, 28*fFontSize);
   nvgFontFaceId(s->vg, s->font_sans_bold);
   nvgTextAlign(s->vg, NVG_ALIGN_CENTER | NVG_ALIGN_MIDDLE);
-  nvgTextBox(s->vg, network_ip_x, network_ip_y, network_ip_w, network_ip_str, NULL);
+  nvgTextBox(s->vg, network_ip_x, network_ip_y, network_ip_w, s->scene.ipAddr.c_str(), NULL);
 }
 
 static void ui_draw_sidebar_battery_text(UIState *s) {
