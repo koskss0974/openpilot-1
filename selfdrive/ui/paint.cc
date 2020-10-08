@@ -531,8 +531,8 @@ static void ui_draw_vision_lanes(UIState *s) {
   // Draw left lane edge
   ui_draw_lane(
       s, &scene->model.left_lane,
-      pvd + MODEL_LANE_PATH_CNT,
-      colorRight );
+      pvd,
+      colorLeft );
 
   // Draw right lane edge
   ui_draw_lane(
