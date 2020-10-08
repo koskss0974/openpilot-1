@@ -483,26 +483,18 @@ static void ui_draw_vision_lanes(UIState *s) {
   int left_blue_lvl = 0;
   int right_blue_lvl = 0;
 
-  if ( scene->model.left_lane.prob > 0.65 ){
-    left_blue_lvl = int(255 - (1 - scene->model.left_lane.prob) * 2.857 * 255);
-    left_green_lvl = int(255 - (scene->model.left_lane.prob - 0.65) * 2.857 * 255);
-  }
-  else if ( scene->model.left_lane.prob > 0.4 ){
-    left_red_lvl = int(255 - (scene->model.left_lane.prob - 0.4) * 2.5 * 255);
-    left_green_lvl = 255 ;
+  if ( scene->model.left_lane.prob > 0.5 ){
+    left_green_lvl = int(255 - (1 - scene->model.left_lane.prob) * 1.1 * 255);
+    left_red_lvl = int((1 - scene->model.left_lane.prob) * 2.0 * 255);
   }
   else {
     left_red_lvl = 255 ;
-    left_green_lvl = int(255 - (0.4 - scene->model.left_lane.prob) * 2.5 * 255);
+    left_green_lvl = int(255 - (0.5 - scene->model.left_lane.prob) * 2.5 * 255);
   }
 
   if ( scene->model.right_lane.prob > 0.65 ){
-    right_blue_lvl = int(255 - (1 - scene->model.right_lane.prob) * 2.857 * 255);
-    right_green_lvl = int(255 - (scene->model.right_lane.prob - 0.65) * 2.857 * 255);
-  }
-  else if ( scene->model.right_lane.prob > 0.4 ){
-    right_red_lvl = int(255 - (scene->model.right_lane.prob - 0.4) * 2.5 * 255);
-    right_green_lvl = 255 ;
+    right_green_lvl = int(255 - (1 - scene->model.left_lane.prob) * 1.1 * 255);
+    right_blue_lvl = int((1 - scene->model.left_lane.prob) * 2.0 * 255);
   }
   else {
     right_red_lvl = 255 ;
@@ -535,6 +527,12 @@ static void ui_draw_vision_lanes(UIState *s) {
        colorRight = nvgRGBAf( 0.9, 0.9, 0.1, 0.2 ); // 점멸시 옅은 노란색
     }
   }
+  
+  // Draw left lane edge
+  ui_draw_lane(
+      s, &scene->model.left_lane,
+      pvd + MODEL_LANE_PATH_CNT,
+      colorRight );
 
   // Draw right lane edge
   ui_draw_lane(
