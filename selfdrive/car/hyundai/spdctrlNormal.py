@@ -173,7 +173,7 @@ class SpdctrlNormal(SpdController):
             if set_speed > model_speed:
                 self.seq_step_debug = 34
                 set_speed = model_speed
-        elif CS.clu_Vanz >= 85:
+        elif CS.clu_Vanz >= 85 and CS.out.cruiseState.modeSel == 1:
             if model_speed < 80:  
                 set_speed = self.cruise_set_speed_kph - 2 
                 self.seq_step_debug = 35
@@ -185,7 +185,7 @@ class SpdctrlNormal(SpdController):
                 if set_speed > model_speed:
                    self.seq_step_debug = 37
                    set_speed = model_speed
-        elif CS.clu_Vanz >= 70:
+        elif CS.clu_Vanz >= 70 and CS.out.cruiseState.modeSel == 1: 
             if model_speed < 50: 
                 set_speed = self.cruise_set_speed_kph - 2 
                 self.seq_step_debug = 38
