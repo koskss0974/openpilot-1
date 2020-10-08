@@ -153,54 +153,23 @@ class SpdctrlNormal(SpdController):
 
         # 2. 커브 감속.
         #if self.cruise_set_speed_kph >= 100:
-        if CS.clu_Vanz >= 100 and CS.out.cruiseState.modeSel == 1:            
-            if model_speed < 50:
-                set_speed = self.cruise_set_speed_kph - 7 
+        if CS.clu_Vanz >= 59 and CS.out.cruiseState.modeSel == 1:
+            if model_speed < 60:
+                set_speed = self.cruise_set_speed_kph - 20
                 self.seq_step_debug = 30
-                wait_time_cmd = 50
-            elif model_speed < 60:  
-                set_speed = self.cruise_set_speed_kph - 4
+                wait_time_cmd = 200
+            elif model_speed < 70:
+                set_speed = self.cruise_set_speed_kph - 15
                 self.seq_step_debug = 31
-                wait_time_cmd = 70
-            elif model_speed < 80:  
-                set_speed = self.cruise_set_speed_kph - 2
+                wait_time_cmd = 200
+            elif model_speed < 80:
+                set_speed = self.cruise_set_speed_kph - 10
                 self.seq_step_debug = 32
-                wait_time_cmd = 100
-            elif model_speed < 90:  
-                set_speed = self.cruise_set_speed_kph - 1 
+                wait_time_cmd = 200
+            elif model_speed < 90:
+                set_speed = self.cruise_set_speed_kph - 5
                 self.seq_step_debug = 33
-                wait_time_cmd = 150
-            if set_speed > model_speed:
-                self.seq_step_debug = 34
-                set_speed = model_speed
-        elif CS.clu_Vanz >= 85 and CS.out.cruiseState.modeSel == 1:
-            if model_speed < 80:  
-                set_speed = self.cruise_set_speed_kph - 2 
-                self.seq_step_debug = 35
-                wait_time_cmd = 70
-            elif model_speed < 90:  
-                set_speed = self.cruise_set_speed_kph - 1
-                self.seq_step_debug = 36
-                wait_time_cmd = 100
-                if set_speed > model_speed:
-                   self.seq_step_debug = 37
-                   set_speed = model_speed
-        elif CS.clu_Vanz >= 70 and CS.out.cruiseState.modeSel == 1: 
-            if model_speed < 50: 
-                set_speed = self.cruise_set_speed_kph - 2 
-                self.seq_step_debug = 38
-                wait_time_cmd = 70
-            elif model_speed < 70:  
-                set_speed = self.cruise_set_speed_kph - 1 
-                self.seq_step_debug = 39
-                wait_time_cmd = 100
-                if set_speed > model_speed:
-                   self.seq_step_debug = 40
-                   set_speed = model_speed
-        else:
-            if set_speed > model_speed:
-                self.seq_step_debug = 41
-                set_speed = model_speed
+                wait_time_cmd = 200
 
         return wait_time_cmd, set_speed
 
