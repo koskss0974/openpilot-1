@@ -257,7 +257,7 @@ class CarInterface(CarInterfaceBase):
       ret.lateralTuning.lqr.c = [1., 0.]
       ret.lateralTuning.lqr.k = [-100., 450.]
       ret.lateralTuning.lqr.l = [0.22, 0.318]
-      ret.lateralTuning.lqr.dcGain = 0.0035
+      ret.lateralTuning.lqr.dcGain = 0.003
 
 
     ret.atomTuning.cvKPH    = ATOMC.cv_KPH
