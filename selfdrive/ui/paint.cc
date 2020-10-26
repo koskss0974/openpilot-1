@@ -40,6 +40,8 @@ const uint8_t alert_colors[][4] = {
   [STATUS_ALERT] = {0xC9, 0x22, 0x31, 0xf1},
 };
 
+float  fFontSize = 0.8;
+
 static void ui_print(UIState *s, int x, int y,  const char* fmt, ... )
 {
   char* msg_buf = NULL;
@@ -365,11 +367,36 @@ static void ui_draw_vision_lanes(UIState *s) {
     update_all_lane_lines_data(s, scene->model.getRightLane(), scene->right_lane_points, pvd + MODEL_LANE_PATH_CNT);
   }
   
+  int left_red_lvl = 0;
+  int right_red_lvl = 0;
+  int left_green_lvl = 0;
+  int right_green_lvl = 0;
+  int left_blue_lvl = 0;
+  int right_blue_lvl = 0;
+  
   float  left_lane =  fmax(0.1, scene->model.getLeftLane().getProb());
   float  right_lane =  fmax( 0.1, scene->model.getRightLane().getProb());
-  NVGcolor colorLeft = nvgRGBAf(1.0, 1.0, 1.0, left_lane );
-  NVGcolor colorRight = nvgRGBAf(1.0, 1.0, 1.0, right_lane );
+  NVGcolor colorLeft = nvgRGBAf(left_red_lvl, left_green_lvl, left_blue_lvl, left_lane );
+  NVGcolor colorRight = nvgRGBAf(right_red_lvl, right_green_lvl, right_blue_lvl, right_lane );
 
+  if ( scene->model.getLeftLane().getProb() > 0.5 ){
+    left_green_lvl = int(255 - (1 - scene->model.getLeftLane().getProb()) * 1.1 * 255);
+    left_red_lvl = int((1 - scene->model.getLeftLane().getProb()) * 1.568 * 255);
+  }
+  else {
+    left_red_lvl = int(200 + (0.5 - scene->model.getLeftLane().getProb()) * 110);
+    left_green_lvl = int(115 - (0.5 - scene->model.getLeftLane().getProb()) * 230);
+  }
+
+  if ( scene->model.getRightLane().getProb() > 0.5 ){
+    right_green_lvl = int(255 - (1 - scene->model.getRightLane().getProb()) * 1.1 * 255);
+    right_red_lvl = int((1 - scene->model.getRightLane().getProb()) * 1.568 * 255);
+  }
+  else {
+    right_red_lvl = int(200 + (0.5 - scene->model.getRightLane().getProb()) * 110);
+    right_green_lvl = int(115 - (0.5 - scene->model.getRightLane().getProb()) * 230);
+  }
+  
   if( scene->leftBlinker )
   {
     if( scene->leftblindspot )
@@ -381,7 +408,7 @@ static void ui_draw_vision_lanes(UIState *s) {
   {
     colorLeft  = nvgRGBAf(1.0, 0.5, 0.5, left_lane );
   }
-    
+
   if( scene->rightBlinker )
   {
     if( scene->rightblindspot )
@@ -393,6 +420,10 @@ static void ui_draw_vision_lanes(UIState *s) {
   {
     colorRight  = nvgRGBAf(1.0, 0.5, 0.5, right_lane );
   }
+  
+  
+  
+  
   // Draw left lane edge
   ui_draw_lane(s, pvd, colorLeft);
 
@@ -583,14 +614,17 @@ static void ui_draw_debug(UIState *s)
   if (s->scene.params.nDebugUi2 == 1) {
   ui_print( s, ui_viz_rx, ui_viz_ry+0,   "sR:%.2f, %.2f", scene.liveParams.steerRatio, scene.pathPlan.steerRatio );
   ui_print( s, ui_viz_rx, ui_viz_ry+50,  "aO:%.2f, %.2f", scene.liveParams.angleOffset, scene.pathPlan.angleOffset );
-  ui_print( s, ui_viz_rx, ui_viz_ry+100, "aA:%.2f", scene.liveParams.angleOffsetAverage );
-  ui_print( s, ui_viz_rx, ui_viz_ry+150, "sF:%.2f", scene.liveParams.stiffnessFactor );
-  ui_print( s, ui_viz_rx, ui_viz_ry+200, "aD:%.2f", scene.pathPlan.steerActuatorDelay );
-  ui_print( s, ui_viz_rx, ui_viz_ry+250, "lW:%.2f", scene.pathPlan.laneWidth );
-  ui_print( s, ui_viz_rx, ui_viz_ry+300, "prob:%.2f, %.2f", scene.pathPlan.lProb, scene.pathPlan.rProb );
-  ui_print( s, ui_viz_rx, ui_viz_ry+350, "Poly:%.2f, %.2f", scene.pathPlan.lPoly, scene.pathPlan.rPoly );
-  ui_print( s, ui_viz_rx, ui_viz_ry+400, "curv:%.4f", scene.curvature );
-  ui_print( s, ui_viz_rx, ui_viz_ry+450, "awareness:%.2f" , scene.awareness_status);
+  //ui_print( s, ui_viz_rx, ui_viz_ry+100, "aA:%.2f", scene.liveParams.angleOffsetAverage );
+  //ui_print( s, ui_viz_rx, ui_viz_ry+150, "sF:%.2f", scene.liveParams.stiffnessFactor );
+  //ui_print( s, ui_viz_rx, ui_viz_ry+100, "aD:%.2f", scene.pathPlan.steerActuatorDelay );
+  //ui_print( s, ui_viz_rx, ui_viz_ry+250, "lW:%.2f", scene.pathPlan.laneWidth );
+  ui_print( s, ui_viz_rx, ui_viz_ry+100, "prob:%.2f, %.2f", scene.pathPlan.lProb, scene.pathPlan.rProb );
+  //ui_print( s, ui_viz_rx, ui_viz_ry+350, "Poly:%.2f, %.2f", scene.pathPlan.lPoly, scene.pathPlan.rPoly );
+  ui_print( s, ui_viz_rx, ui_viz_ry+150, "curv:%.4f", scene.curvature );
+  //ui_print( s, ui_viz_rx, ui_viz_ry+450, "awareness:%.2f" , scene.awareness_status);
+  
+  ui_print( s, ui_viz_rx+270, ui_viz_ry+800, "좌측간격(%%)       차선폭         우측간격(%%)");
+  ui_print( s, ui_viz_rx+270, ui_viz_ry+850, "      %4.1f                 %4.1f                  %4.1f", (scene.pathPlan.lPoly/(scene.pathPlan.lPoly+abs(scene.pathPlan.rPoly)))*100, scene.pathPlan.laneWidth, (abs(scene.pathPlan.rPoly)/(scene.pathPlan.lPoly+abs(scene.pathPlan.rPoly)))*100 );
   }
 }
 
@@ -798,12 +832,12 @@ static int bb_ui_draw_measure(UIState *s,  const char* bb_value, const char* bb_
    }
   //print value
   nvgFontFace(s->vg, "sans-semibold");
-  nvgFontSize(s->vg, bb_valueFontSize*2.5);
+  nvgFontSize(s->vg, bb_valueFontSize*2*fFontSize);
   nvgFillColor(s->vg, bb_valueColor);
   nvgText(s->vg, bb_x-dx/2, bb_y+ (int)(bb_valueFontSize*2.5)+5, bb_value, NULL);
   //print label
   nvgFontFace(s->vg, "sans-regular");
-  nvgFontSize(s->vg, bb_labelFontSize*2.5);
+  nvgFontSize(s->vg, bb_labelFontSize*2*fFontSize);
   nvgFillColor(s->vg, bb_labelColor);
   nvgText(s->vg, bb_x, bb_y + (int)(bb_valueFontSize*2.5)+5 + (int)(bb_labelFontSize*2.5)+5, bb_label, NULL);
   //print uom
@@ -814,7 +848,7 @@ static int bb_ui_draw_measure(UIState *s,  const char* bb_value, const char* bb_
     nvgTranslate(s->vg,rx,ry);
     nvgRotate(s->vg, -1.5708); //-90deg in radians
     nvgFontFace(s->vg, "sans-regular");
-    nvgFontSize(s->vg, (int)(bb_uomFontSize*2.5));
+    nvgFontSize(s->vg, (int)(bb_uomFontSize*2*fFontSize));
     nvgFillColor(s->vg, bb_uomColor);
     nvgText(s->vg, 0, 0, bb_uom, NULL);
     nvgRestore(s->vg);
@@ -829,9 +863,9 @@ static void bb_ui_draw_measures_left(UIState *s, int bb_x, int bb_y, int bb_w ) 
   int bb_h = 5;
   NVGcolor lab_color = COLOR_WHITE_ALPHA(200);
   NVGcolor uom_color = COLOR_WHITE_ALPHA(200);
-  int value_fontSize=30*0.8;
-  int label_fontSize=15*0.8;
-  int uom_fontSize = 15*0.8;
+  int value_fontSize=30;
+  int label_fontSize=15;
+  int uom_fontSize = 15;
   int bb_uom_dx =  (int)(bb_w /2 - uom_fontSize*2.5) ;
   //CPU TEMP
     if (true) {
@@ -915,6 +949,7 @@ static void bb_ui_draw_measures_left(UIState *s, int bb_x, int bb_y, int bb_w ) 
         value_fontSize, label_fontSize, uom_fontSize );
     bb_ry = bb_y + bb_h;
   }
+  /*
   //add altitude
   if (scene->gpsAccuracyUblox != 0.00) {
     char val_str[16];
@@ -928,6 +963,7 @@ static void bb_ui_draw_measures_left(UIState *s, int bb_x, int bb_y, int bb_w ) 
         value_fontSize, label_fontSize, uom_fontSize );
     bb_ry = bb_y + bb_h;
   }
+  */
 
   //finally draw the frame
   bb_h += 20;
@@ -945,9 +981,9 @@ static void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w )
   int bb_h = 5;
   NVGcolor lab_color = COLOR_WHITE_ALPHA(200);
   NVGcolor uom_color = COLOR_WHITE_ALPHA(200);
-  int value_fontSize=30*0.8;
-  int label_fontSize=15*0.8;
-  int uom_fontSize = 15*0.8;
+  int value_fontSize=30;
+  int label_fontSize=15;
+  int uom_fontSize = 15;
   int bb_uom_dx =  (int)(bb_w /2 - uom_fontSize*2.5) ;
 
   //add visual radar relative distance
@@ -1040,7 +1076,7 @@ static void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w )
         value_fontSize, label_fontSize, uom_fontSize );
     bb_ry = bb_y + bb_h;
   }
-
+  
   //add desired steering angle
   if (true) {
     char val_str[16];
@@ -1067,7 +1103,8 @@ static void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w )
         value_fontSize, label_fontSize, uom_fontSize );
     bb_ry = bb_y + bb_h;
   }
-
+  
+  /*
   //add steerratio from pathplan
   if (true) {
     char val_str[16];
@@ -1085,6 +1122,7 @@ static void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w )
         value_fontSize, label_fontSize, uom_fontSize );
     bb_ry = bb_y + bb_h;
   }
+  */
 
   //finally draw the frame
   bb_h += 20;
