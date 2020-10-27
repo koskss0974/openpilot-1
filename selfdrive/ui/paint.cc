@@ -367,35 +367,10 @@ static void ui_draw_vision_lanes(UIState *s) {
     update_all_lane_lines_data(s, scene->model.getRightLane(), scene->right_lane_points, pvd + MODEL_LANE_PATH_CNT);
   }
   
-  int left_red_lvl = 0;
-  int right_red_lvl = 0;
-  int left_green_lvl = 0;
-  int right_green_lvl = 0;
-  int left_blue_lvl = 0;
-  int right_blue_lvl = 0;
-  
   float  left_lane =  fmax(0.1, scene->model.getLeftLane().getProb());
   float  right_lane =  fmax( 0.1, scene->model.getRightLane().getProb());
-  NVGcolor colorLeft = nvgRGBAf(left_red_lvl, left_green_lvl, left_blue_lvl, left_lane );
-  NVGcolor colorRight = nvgRGBAf(right_red_lvl, right_green_lvl, right_blue_lvl, right_lane );
-
-  if ( scene->model.getLeftLane().getProb() > 0.5 ){
-    left_green_lvl = int(255 - (1 - scene->model.getLeftLane().getProb()) * 1.1 * 255);
-    left_red_lvl = int((1 - scene->model.getLeftLane().getProb()) * 1.568 * 255);
-  }
-  else {
-    left_red_lvl = int(200 + (0.5 - scene->model.getLeftLane().getProb()) * 110);
-    left_green_lvl = int(115 - (0.5 - scene->model.getLeftLane().getProb()) * 230);
-  }
-
-  if ( scene->model.getRightLane().getProb() > 0.5 ){
-    right_green_lvl = int(255 - (1 - scene->model.getRightLane().getProb()) * 1.1 * 255);
-    right_red_lvl = int((1 - scene->model.getRightLane().getProb()) * 1.568 * 255);
-  }
-  else {
-    right_red_lvl = int(200 + (0.5 - scene->model.getRightLane().getProb()) * 110);
-    right_green_lvl = int(115 - (0.5 - scene->model.getRightLane().getProb()) * 230);
-  }
+  NVGcolor colorLeft = nvgRGBAf(1.0, 1.0, 1.0, left_lane );
+  NVGcolor colorRight = nvgRGBAf(1.0, 1.0, 1.0, right_lane );
   
   if( scene->leftBlinker )
   {
@@ -421,8 +396,33 @@ static void ui_draw_vision_lanes(UIState *s) {
     colorRight  = nvgRGBAf(1.0, 0.5, 0.5, right_lane );
   }
   
+  int left_red_lvl = 0;
+  int right_red_lvl = 0;
+  int left_green_lvl = 0;
+  int right_green_lvl = 0;
+  int left_blue_lvl = 0;
+  int right_blue_lvl = 0;
+
+  if ( scene->model.getLeftLane().getProb() > 0.5 ){
+    left_green_lvl = int(255 - (1 - scene->model.getLeftLane().getProb()) * 1.1 * 255);
+    left_red_lvl = int((1 - scene->model.getLeftLane().getProb()) * 1.568 * 255);
+  }
+  else {
+    left_red_lvl = int(200 + (0.5 - scene->model.getLeftLane().getProb()) * 110);
+    left_green_lvl = int(115 - (0.5 - scene->model.getLeftLane().getProb()) * 230);
+  }
+
+  if ( scene->model.getRightLane().getProb() > 0.5 ){
+    right_green_lvl = int(255 - (1 - scene->model.getRightLane().getProb()) * 1.1 * 255);
+    right_red_lvl = int((1 - scene->model.getRightLane().getProb()) * 1.568 * 255);
+  }
+  else {
+    right_red_lvl = int(200 + (0.5 - scene->model.getRightLane().getProb()) * 110);
+    right_green_lvl = int(115 - (0.5 - scene->model.getRightLane().getProb()) * 230);
+  }
   
-  
+  colorLeft = nvgRGBA (left_red_lvl, left_green_lvl, left_blue_lvl, 255);
+  colorRight = nvgRGBA (right_red_lvl, right_green_lvl, right_blue_lvl, 255);
   
   // Draw left lane edge
   ui_draw_lane(s, pvd, colorLeft);
@@ -623,8 +623,8 @@ static void ui_draw_debug(UIState *s)
   ui_print( s, ui_viz_rx, ui_viz_ry+150, "curv:%.4f", scene.curvature );
   //ui_print( s, ui_viz_rx, ui_viz_ry+450, "awareness:%.2f" , scene.awareness_status);
   
-  ui_print( s, ui_viz_rx+270, ui_viz_ry+800, "좌측간격(%%)       차선폭         우측간격(%%)");
-  ui_print( s, ui_viz_rx+270, ui_viz_ry+850, "      %4.1f                 %4.1f                  %4.1f", (scene.pathPlan.lPoly/(scene.pathPlan.lPoly+abs(scene.pathPlan.rPoly)))*100, scene.pathPlan.laneWidth, (abs(scene.pathPlan.rPoly)/(scene.pathPlan.lPoly+abs(scene.pathPlan.rPoly)))*100 );
+  ui_print( s, ui_viz_rx+200, ui_viz_ry+800, "좌측간격(%%)       차선폭         우측간격(%%)");
+  ui_print( s, ui_viz_rx+250, ui_viz_ry+850, "%4.1f                  %4.1f                 %4.1f", (scene.pathPlan.lPoly/(scene.pathPlan.lPoly+abs(scene.pathPlan.rPoly)))*100, scene.pathPlan.laneWidth, (abs(scene.pathPlan.rPoly)/(scene.pathPlan.lPoly+abs(scene.pathPlan.rPoly)))*100 );
   }
 }
 
@@ -1152,12 +1152,12 @@ static void bb_ui_draw_UI(UIState *s)
 
 static void ui_draw_vision_car(UIState *s) {
   const UIScene *scene = &s->scene;
-  const int car_size = 250;
-  const int car_x_left = (scene->viz_rect.centerX() - 500);
-  const int car_x_right = (scene->viz_rect.centerX() + 500);
-  const int car_y = 700;
+  const int car_size = 350;
+  const int car_x_left = (scene->viz_rect.centerX() - 400);
+  const int car_x_right = (scene->viz_rect.centerX() + 400);
+  const int car_y = 500;
   const int car_img_size_w = (car_size * 1);
-  const int car_img_size_h = (car_size * 1.17);
+  const int car_img_size_h = (car_size * 1);
   const int car_img_x_left = (car_x_left - (car_img_size_w / 2));
   const int car_img_x_right = (car_x_right - (car_img_size_w / 2));
   const int car_img_y = (car_y - (car_size / 4));
