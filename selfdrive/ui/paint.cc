@@ -622,7 +622,7 @@ static void ui_draw_debug(UIState *s)
     ui_print( s, ui_viz_rx, ui_viz_ry+150, "prob:%.2f, %.2f", scene.pathPlan.lProb, scene.pathPlan.rProb );
     //ui_print( s, ui_viz_rx, ui_viz_ry+450, "awareness:%.2f" , scene.awareness_status);
     nvgTextAlign(s->vg, NVG_ALIGN_CENTER | NVG_ALIGN_BASELINE);
-    ui_print( s, ui_viz_rx_center, ui_viz_ry+800, " LeftPoly(%%)    LaneWidth    RightPoly(%%)");
+    ui_print( s, ui_viz_rx_center, ui_viz_ry+800, " L.Poly(%%)      LaneWidth      R.Poly(%%)");
     ui_print( s, ui_viz_rx_center, ui_viz_ry+850, "%4.1f                    %4.2f                    %4.1f", (scene.pathPlan.lPoly/(scene.pathPlan.lPoly+abs(scene.pathPlan.rPoly)))*100, scene.pathPlan.laneWidth, (abs(scene.pathPlan.rPoly)/(scene.pathPlan.lPoly+abs(scene.pathPlan.rPoly)))*100 );
   }
 }
