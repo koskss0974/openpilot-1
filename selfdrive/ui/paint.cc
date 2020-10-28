@@ -1192,17 +1192,17 @@ static void ui_draw_vision_car(UIState *s) {
       nvgRect(s->vg, car_img_x_left, car_img_y, car_img_size_w, car_img_size_h);
       nvgFillPaint(s->vg, car_img_left);
       nvgFill(s->vg);
-    }
-    if(car_valid_right) {
-      NVGpaint car_img_right = nvgImagePattern(s->vg, car_img_x_right, car_img_y,
-        car_img_size_w, car_img_size_h, 0, s->img_car_right, car_img_alpha);
-      nvgBeginPath(s->vg);
-      nvgRect(s->vg, car_img_x_right, car_img_y, car_img_size_w, car_img_size_h);
-      nvgFillPaint(s->vg, car_img_right);
-      nvgFill(s->vg);
+      }
+      if(car_valid_right) {
+        NVGpaint car_img_right = nvgImagePattern(s->vg, car_img_x_right, car_img_y,
+          car_img_size_w, car_img_size_h, 0, s->img_car_right, car_img_alpha);
+        nvgBeginPath(s->vg);
+        nvgRect(s->vg, car_img_x_right, car_img_y, car_img_size_w, car_img_size_h);
+        nvgFillPaint(s->vg, car_img_right);
+        nvgFill(s->vg);
+      }
     }
   }
-}
 
 static void ui_draw_vision_footer(UIState *s) {
   const UIScene *scene = &s->scene;
