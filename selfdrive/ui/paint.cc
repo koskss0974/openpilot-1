@@ -602,29 +602,29 @@ static void ui_draw_debug(UIState *s)
 
   int ui_viz_rx = scene.viz_rect.x + 300;
   int ui_viz_ry = 108; 
+  int ui_viz_rx_center = scene.viz_rect.centerX();
   
   nvgTextAlign(s->vg, NVG_ALIGN_LEFT | NVG_ALIGN_BASELINE);
 
   if (s->scene.params.nDebugUi1 == 1) {
-    ui_draw_text(s->vg, 0, 1024, scene.alertTextMsg1.c_str(), 50, COLOR_WHITE_ALPHA(200), s->font_sans_semibold);
-    ui_draw_text(s->vg, 0, 1078, scene.alertTextMsg2.c_str(), 50, COLOR_WHITE_ALPHA(200), s->font_sans_semibold);
+    ui_draw_text(s->vg, 0, 1024, scene.alertTextMsg1.c_str(), 50, COLOR_WHITE_ALPHA(150), s->font_sans_semibold);
+    ui_draw_text(s->vg, 0, 1078, scene.alertTextMsg2.c_str(), 50, COLOR_WHITE_ALPHA(150), s->font_sans_semibold);
   }
 
   nvgFontSize(s->vg, 45);
   if (s->scene.params.nDebugUi2 == 1) {
-  ui_print( s, ui_viz_rx, ui_viz_ry+0,   "sR:%.2f, %.2f", scene.liveParams.steerRatio, scene.pathPlan.steerRatio );
-  ui_print( s, ui_viz_rx, ui_viz_ry+50,  "aO:%.2f, %.2f", scene.liveParams.angleOffset, scene.pathPlan.angleOffset );
-  //ui_print( s, ui_viz_rx, ui_viz_ry+100, "aA:%.2f", scene.liveParams.angleOffsetAverage );
-  //ui_print( s, ui_viz_rx, ui_viz_ry+150, "sF:%.2f", scene.liveParams.stiffnessFactor );
-  //ui_print( s, ui_viz_rx, ui_viz_ry+100, "aD:%.2f", scene.pathPlan.steerActuatorDelay );
-  //ui_print( s, ui_viz_rx, ui_viz_ry+250, "lW:%.2f", scene.pathPlan.laneWidth );
-  ui_print( s, ui_viz_rx, ui_viz_ry+100, "prob:%.2f, %.2f", scene.pathPlan.lProb, scene.pathPlan.rProb );
-  //ui_print( s, ui_viz_rx, ui_viz_ry+350, "Poly:%.2f, %.2f", scene.pathPlan.lPoly, scene.pathPlan.rPoly );
-  ui_print( s, ui_viz_rx, ui_viz_ry+150, "curv:%.4f", scene.curvature );
-  //ui_print( s, ui_viz_rx, ui_viz_ry+450, "awareness:%.2f" , scene.awareness_status);
-  
-  ui_print( s, ui_viz_rx+200, ui_viz_ry+800, "좌측간격(%%)       차선폭         우측간격(%%)");
-  ui_print( s, ui_viz_rx+250, ui_viz_ry+850, "%4.1f                   %4.1f                 %4.1f", (scene.pathPlan.lPoly/(scene.pathPlan.lPoly+abs(scene.pathPlan.rPoly)))*100, scene.pathPlan.laneWidth, (abs(scene.pathPlan.rPoly)/(scene.pathPlan.lPoly+abs(scene.pathPlan.rPoly)))*100 );
+    ui_print( s, ui_viz_rx, ui_viz_ry+0,   "sR:%.2f", scene.pathPlan.steerRatio );
+    ui_print( s, ui_viz_rx, ui_viz_ry+50,  "aO:%.2f", scene.pathPlan.angleOffset );
+    //ui_print( s, ui_viz_rx, ui_viz_ry+100, "aA:%.2f", scene.liveParams.angleOffsetAverage );
+    //ui_print( s, ui_viz_rx, ui_viz_ry+150, "sF:%.2f", scene.liveParams.stiffnessFactor );
+    //ui_print( s, ui_viz_rx, ui_viz_ry+100, "aD:%.2f", scene.pathPlan.steerActuatorDelay );
+    //ui_print( s, ui_viz_rx, ui_viz_ry+250, "lW:%.2f", scene.pathPlan.laneWidth );
+    ui_print( s, ui_viz_rx, ui_viz_ry+100, "prob:%.2f, %.2f", scene.pathPlan.lProb, scene.pathPlan.rProb );
+    //ui_print( s, ui_viz_rx, ui_viz_ry+350, "Poly:%.2f, %.2f", scene.pathPlan.lPoly, scene.pathPlan.rPoly );
+    ui_print( s, ui_viz_rx, ui_viz_ry+150, "curv:%.4f", scene.curvature );
+    //ui_print( s, ui_viz_rx, ui_viz_ry+450, "awareness:%.2f" , scene.awareness_status);
+    ui_print( s, ui_viz_rx_center, ui_viz_ry+800, " LeftPoly(%%)    LaneWidth    RightPoly(%%)");
+    ui_print( s, ui_viz_rx_center, ui_viz_ry+850, "%4.1f                    %4.2f                    %4.1f", (scene.pathPlan.lPoly/(scene.pathPlan.lPoly+abs(scene.pathPlan.rPoly)))*100, scene.pathPlan.laneWidth, (abs(scene.pathPlan.rPoly)/(scene.pathPlan.lPoly+abs(scene.pathPlan.rPoly)))*100 );
   }
 }
 
@@ -1173,24 +1173,34 @@ static void ui_draw_vision_car(UIState *s) {
       car_img_alpha = 0.6f;
     } else {
       car_img_alpha = 0.0f;
+  if (s->scene.params.nOpkrBlindSpotDetect == 1) {
+    if(car_valid_left || car_valid_right) {
+      s->scene.blindspot_blinkingrate -= 6;
+      if(scene->blindspot_blinkingrate<0) s->scene.blindspot_blinkingrate = 120;
+      if (scene->blindspot_blinkingrate>=60) {
+        car_img_alpha = 0.6f;
+      } else {
+        car_img_alpha = 0.0f;
+      }
     }
   }
 
-  if(car_valid_left) {
-    NVGpaint car_img_left = nvgImagePattern(s->vg, car_img_x_left, car_img_y,
-      car_img_size_w, car_img_size_h, 0, s->img_car_left, car_img_alpha);
-    nvgBeginPath(s->vg);
-    nvgRect(s->vg, car_img_x_left, car_img_y, car_img_size_w, car_img_size_h);
-    nvgFillPaint(s->vg, car_img_left);
-    nvgFill(s->vg);
-  }
-  if(car_valid_right) {
-    NVGpaint car_img_right = nvgImagePattern(s->vg, car_img_x_right, car_img_y,
-      car_img_size_w, car_img_size_h, 0, s->img_car_right, car_img_alpha);
-    nvgBeginPath(s->vg);
-    nvgRect(s->vg, car_img_x_right, car_img_y, car_img_size_w, car_img_size_h);
-    nvgFillPaint(s->vg, car_img_right);
-    nvgFill(s->vg);
+      if(car_valid_left) {
+      NVGpaint car_img_left = nvgImagePattern(s->vg, car_img_x_left, car_img_y,
+        car_img_size_w, car_img_size_h, 0, s->img_car_left, car_img_alpha);
+      nvgBeginPath(s->vg);
+      nvgRect(s->vg, car_img_x_left, car_img_y, car_img_size_w, car_img_size_h);
+      nvgFillPaint(s->vg, car_img_left);
+      nvgFill(s->vg);
+    }
+    if(car_valid_right) {
+      NVGpaint car_img_right = nvgImagePattern(s->vg, car_img_x_right, car_img_y,
+        car_img_size_w, car_img_size_h, 0, s->img_car_right, car_img_alpha);
+      nvgBeginPath(s->vg);
+      nvgRect(s->vg, car_img_x_right, car_img_y, car_img_size_w, car_img_size_h);
+      nvgFillPaint(s->vg, car_img_right);
+      nvgFill(s->vg);
+    }
   }
 }
 
